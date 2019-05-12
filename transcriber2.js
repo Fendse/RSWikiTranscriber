@@ -45,7 +45,7 @@ function stopAndClear() {
 * Clears the dialogue tree.
 */
 function clear() {
-	dialogueTree = {};
+	dialogueTree = null;
 	currentChild = dialogueTree;
 	lastRead = null;
 }
@@ -79,12 +79,18 @@ function spacebar() {
 	
 	if (isOpts(read)) {
 		clearInterval(interval);
+		interval = null;
 		
 		setupOptButtons(read.opts);
 	}
-	read.parent = currentChild;
-	currentChild.next = read;
+	if (currentChild) {
+		read.parent = currentChild;
+		currentChild.next = read;
+	}
 	currentChild = read;
+	if (!dialogueTree) {
+		dialogueTree = currentChild;
+	}
 }
 
 /**
@@ -108,13 +114,19 @@ function select(index) {
 	lastRead = read;
 	
 	clearInterval(interval);
+	interval = null;
 	
 	if (!isOpts(read)) {
-		setInterval(spacebar, 400);
+		interval = setInterval(spacebar, 400);
 	}
 	setupOptButtons(read.opts);
 	read.parent = currentChild;
-	currentChild.opts[index].next = read;
+	if (currentChild.opts) {
+		currentChild.opts[index].next = read;
+	} else {
+		console.log("currentChild has no options in select()");
+		console.log(currentChild);
+	}
 	currentChild = read;
 }
 
