@@ -56,7 +56,7 @@ function clear() {
 */
 function exportTree() {
 	// Actually, right now it just logs the tree straight to the console.
-	console.log(JSON.stringify(dialogueTree)); // TODO
+	console.log(dialogueTree); // TODO
 }
 
 
