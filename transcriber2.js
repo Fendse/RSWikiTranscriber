@@ -99,6 +99,10 @@ function spacebar() {
 
 	var continuingFromOld = false;
 	if (currentChild) {
+		if (areTheSame(currentChild, read)) {
+			// Keep things in sync after restarts.
+			return;
+		}
 		if (currentChild.next) {
 			// We've been here before
 			if (areTheSame(read, currentChild.next)) {
