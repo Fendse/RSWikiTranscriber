@@ -49,6 +49,7 @@ function clear() {
 	dialogueTree = null;
 	currentChild = dialogueTree;
 	lastRead = null;
+	document.getElementById("output").innerText = "";
 }
 
 /**
