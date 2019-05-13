@@ -4,8 +4,9 @@ onPageReady(function () {
 		document.getElementById("clear").onclick = stopAndClear;
 		document.getElementById("export").onclick = exportTree;
 		a1lib.identifyUrl("appconfig.json");
+		playerInputField = document.getElementById("playername");
 	} else {
-		document.write("Could not detect Alt1");
+		document.getElementById("output").innerText = "Could not detect Alt1";
 	}
 });
 
@@ -51,14 +52,25 @@ function clear() {
 }
 
 /**
-* Exports the generated dialogue tree to a text format. Exports directly to the clipboard,
-* because that was easier than having a dedicated output area tbh.
+* Exports the generated dialogue tree to a text format.
+* Write it to a dedicated output area.
 */
 function exportTree() {
-	// Actually, right now it just logs the tree straight to the console.
-	console.log(dialogueTree); // TODO
-}
+	if (dialogueTree == null) {
+		document.getElementById("output").innerText = "{{transcript missing}}";
+	}
+	var result = "";
 
+	document.getElementById("output").innerText = stringify(dialogueTree, 1);
+	return;
+	
+	var itemsToParse = [dialogueTree];
+
+	while (itemsToParse.length) {
+		var next = itemsToParse[0];
+	}
+	
+}
 
 
 /**
@@ -226,4 +238,42 @@ function parseSpeech(read) {
 
 function parseOpts(read) {
 	
+}
+
+
+function stringify(dialogue, indentLevel) {
+	if (dialogue == null) return ""; // Is this sensible or do we want {{transcript missing}}?
+	if (isOpts(dialogue)) {
+		
+	} else if (isSpeech(dialogue)) {
+		var retVal = "";
+		if (dialogue.parent
+			&& isSpeech(dialogue.parent)
+			&& dialogue.parent.title == dialogue.title) {
+				retVal =  " " + dialogue.text.join(" ");
+		} else {
+			retVal = "\n"
+				+ "*".repeat(indentLevel)
+				+ " '''"
+				+ titleOrPlayerName(dialogue.title)
+				+ ":''' "
+				+ dialogue.text.join(" ");
+		}
+		if (dialogue.next) return retVal + stringify(dialogue.next, indentLevel);
+		else return retVal;
+	} else if (isMessage(dialogue)) {
+		
+	} else {
+		console.log("Could not make sense of the following dialogue entry:");
+		console.log(dialogue);
+	}
+}
+
+var playerInputField;
+function titleOrPlayerName(ttl) {
+	if (ttl.toUpperCase() == playerInputField.value.toUpperCase()) {
+		return "Player";
+	} else {
+		return ttl;
+	}
 }
