@@ -5,6 +5,9 @@ onPageReady(function () {
 		document.getElementById("export").onclick = exportTree;
 		a1lib.identifyUrl("appconfig.json");
 		playerInputField = document.getElementById("playername");
+		document.getElementById("use-custom-indent").addEventListener("change", function(evt) {
+			document.getElementById("custom-indent").disabled = !evt.target.checked;
+		});
 	} else {
 		document.getElementById("output").innerText = "Could not detect Alt1";
 	}
