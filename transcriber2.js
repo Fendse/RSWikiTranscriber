@@ -289,7 +289,7 @@ function stringify(dialogue, indentLevel) {
 		var retVal = "\n";
 		retVal += "*".repeat(indentLevel);
 		retVal += " '''";
-		retVal += dialogue.title;
+		retVal += dialogue.title[0].toUpperCase() + dialogue.title.slice(1).toLowerCase();
 		retVal += "'''";
 
 		for (var i = 0; i < dialogue.opts.length; ++i) {
@@ -338,7 +338,7 @@ function titleOrPlayerName(ttl) {
 	if (ttl.toUpperCase() == playerInputField.value.toUpperCase()) {
 		return "Player";
 	} else {
-		return ttl;
+		return ttl[0].toUpperCase() + ttl.slice(1).toLowerCase();
 	}
 }
 
