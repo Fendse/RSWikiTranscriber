@@ -262,7 +262,12 @@ function stringify(dialogue, indentLevel) {
 		if (dialogue.next) return retVal + stringify(dialogue.next, indentLevel);
 		else return retVal;
 	} else if (isMessage(dialogue)) {
-		
+		var retVal = "";
+		if (dialogue.parent && isMessage(dialogue.parent) {
+			retVal = " " + dialogue.text.join(" ");
+		} else {
+			retVal = "\n" + "*".repeat(indentLevel) + " " + dialogue.text.join(" ");
+		}
 	} else {
 		console.log("Could not make sense of the following dialogue entry:");
 		console.log(dialogue);
