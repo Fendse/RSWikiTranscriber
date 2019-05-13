@@ -95,10 +95,48 @@ function spacebar() {
 		
 		setupOptButtons(read.opts);
 	}
+
+	var continuingFromOld = false;
 	if (currentChild) {
-		read.parent = currentChild;
-		currentChild.next = read;
+		if (currentChild.next) {
+			// We've been here before
+			if (isSpeech(read)
+				&& isSpeech(currentChild.next)
+				&& read.title == currentChild.next.title
+				&& read.text.join(" ") == currentChild.next.text.join(" ")
+			   ) {
+				continuingFromOld = true;
+				// It's the same text as earlier, so we move on.
+			} else if (isOpts(read)
+					   && isOpts(currentChild.next)
+					  ) {
+				// TODO: Maybe allow minor variation ("shows other options")
+				// Also, probably refactor this into reparate function, since this is a check we might want to repeat elsewhere
+				if (read.opts.length == currentChild.next.opts.length) {
+					continuingFromOld = true;
+					for (var i = 0; i < read.opts.length; ++i) {
+						if (read.opts[i].str != currentChild.next.opts[i].str) {
+							continuingFromOld = false;
+							break;
+						}
+					}
+				}
+			} else if (isMessage(read)
+					   && isMessage(currentChild.next)
+					   && read.text.join(" ") == currentChild.next.text.join(" ")
+					  ) {
+				continuingFromOld = true;
+			}
+		}
+		if (continuingFromOld) {
+			currentChild = currentChild.next;
+			return;
+		} else {
+			read.parent = currentChild;
+			currentChild.next = read;
+		}
 	}
+	
 	currentChild = read;
 	if (!dialogueTree) {
 		dialogueTree = currentChild;
