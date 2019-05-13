@@ -101,41 +101,20 @@ function spacebar() {
 	if (currentChild) {
 		if (currentChild.next) {
 			// We've been here before
-			if (isSpeech(read)
-				&& isSpeech(currentChild.next)
-				&& read.title == currentChild.next.title
-				&& read.text.join(" ") == currentChild.next.text.join(" ")
-			   ) {
-				continuingFromOld = true;
-				// It's the same text as earlier, so we move on.
-			} else if (isOpts(read)
-					   && isOpts(currentChild.next)
-					  ) {
-				// TODO: Maybe allow minor variation ("shows other options")
-				// Also, probably refactor this into reparate function, since this is a check we might want to repeat elsewhere
-				if (read.opts.length == currentChild.next.opts.length) {
-					continuingFromOld = true;
-					for (var i = 0; i < read.opts.length; ++i) {
-						if (read.opts[i].str != currentChild.next.opts[i].str) {
-							continuingFromOld = false;
-							break;
-						}
-					}
-				}
-			} else if (isMessage(read)
-					   && isMessage(currentChild.next)
-					   && read.text.join(" ") == currentChild.next.text.join(" ")
-					  ) {
-				continuingFromOld = true;
+			if (areTheSame(read, currentChild.next)) {
+				currentChild = currentChild.next;
+				return;
+			} else {
+				// We're probably dealing with random/conditional dialogue
+				// TODO: Deal with that in a reasonable manner
+				// (for now, we just ignore the old dialogue in favour of the new)
+
+				// (by which I mean we fall through to the code we'd've ended up in
+				//  had currentChild.next not been set)
 			}
 		}
-		if (continuingFromOld) {
-			currentChild = currentChild.next;
-			return;
-		} else {
-			read.parent = currentChild;
-			currentChild.next = read;
-		}
+		currentChild.next = read;
+		read.parent = currentChild;
 	}
 	
 	currentChild = read;
@@ -151,9 +130,11 @@ function spacebar() {
 * box is another options box.
 */
 function select(index) {
-	interval = setInterval(function() {
-		select(index);
-	}, 400);
+	if (interval == null) {
+		interval = setInterval(function() {
+			select(index);
+		}, 400);
+	}
 	var image = a1lib.bindfullrs();
 	var foundBox = reader.find(image);
 
@@ -172,12 +153,26 @@ function select(index) {
 	}
 	setupOptButtons(read.opts);
 	read.parent = currentChild;
-	if (currentChild.opts) {
-		currentChild.opts[index].next = read;
-	} else {
-		console.log("currentChild has no options in select()");
-		console.log(currentChild);
+
+
+	if (currentChild.opts[index].next) {
+		// We've been here before
+		if (areTheSame(read, currentChild.opts[index].next)) {
+			currentChild = currentChild.opts[index].next;
+			return;
+		} else {
+			// We're probably dealing with random/conditional dialogue
+			// TODO: Deal with that in a reasonable manner
+			// (for now, we just ignore the old dialogue in favour of the new)
+
+			// (by which I mean we fall through to the code we'd've ended up in
+			//  had currentChild.opts[index].next not been set)
+		}
 	}
+		
+	currentChild.opts[index].next = read;
+	read.parent = currentChild;
+	
 	currentChild = read;
 }
 
@@ -337,4 +332,36 @@ function titleOrPlayerName(ttl) {
 	} else {
 		return ttl;
 	}
+}
+
+
+function areTheSame(box1, box2) {
+	if (!!box1 != !!box2) return false;
+
+	if (isSpeech(box1)
+		&& isSpeech(box2)
+		&& box1.title == box2.title
+		&& box1.text.join(" ") == box2.text.join(" ")
+	   ) {
+		return true;
+	} else if (isOpts(box1)
+			   && isOpts(box2)
+			  ) {
+		// TODO: Maybe allow minor variation ("shows other options")
+		if (box1.opts.length != box2.opts.length) {
+			return false;
+		}
+		for (var i = 0; i < box1.opts.length; ++i) {
+			if (box1.opts[i].str != box2.opts[i].str) {
+				return false;
+			}
+		}
+		return true;
+	} else if (isMessage(box1)
+			   && isMessage(box2)
+			   && box1.text.join(" ") == box2.text.join(" ")
+			  ) {
+		return true;
+	}
+
 }
