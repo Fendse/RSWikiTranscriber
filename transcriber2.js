@@ -57,12 +57,13 @@ function clear() {
 * Write it to a dedicated output area.
 */
 function exportTree() {
-	if (dialogueTree == null) {
-		document.getElementById("output").innerText = "{{transcript missing}}";
+	var initialIndent = 1;
+	if (document.getElementById("use-custom-indent").checked) {
+		initialIndent = parseInt(document.getElementById("custom-indent").value, 10);
 	}
-	var result = "";
 
-	document.getElementById("output").innerText = stringify(dialogueTree, 1);
+	
+	document.getElementById("output").innerText = stringify(dialogueTree, initialIndent);
 	return;
 	
 	var itemsToParse = [dialogueTree];
