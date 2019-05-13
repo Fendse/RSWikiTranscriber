@@ -244,7 +244,24 @@ function parseOpts(read) {
 function stringify(dialogue, indentLevel) {
 	if (dialogue == null) return ""; // Is this sensible or do we want {{transcript missing}}?
 	if (isOpts(dialogue)) {
-		
+		var retVal = "\n";
+		retVal += "*".repeat(indentLevel);
+		retVal += " '''";
+		retVal += dialogue.title;
+		retVal += "'''";
+
+		for (var i = 0; i < dialogue.opts.length; ++i) {
+			retVal += "\n";
+			retVal += "*".repeat(indentLevel + 1);
+			retVal += dialogue.opts[i].str;
+			if (dialogue.opts[i].next) {
+				retVal += stringify(dialogue.opts[i].next, indentLevel + 2);
+			} else {
+				retVal += "\n" + "*".repeat(indentLevel + 2) + " {{Transcript missing}}";
+			}
+			
+		}
+		return retVal;
 	} else if (isSpeech(dialogue)) {
 		var retVal = "";
 		if (dialogue.parent
@@ -263,7 +280,7 @@ function stringify(dialogue, indentLevel) {
 		else return retVal;
 	} else if (isMessage(dialogue)) {
 		var retVal = "";
-		if (dialogue.parent && isMessage(dialogue.parent) {
+		if (dialogue.parent && isMessage(dialogue.parent)) {
 			retVal = " " + dialogue.text.join(" ");
 		} else {
 			retVal = "\n" + "*".repeat(indentLevel) + " " + dialogue.text.join(" ");
