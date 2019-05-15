@@ -327,6 +327,8 @@ function stringify(dialogue, indentLevel) {
 		} else {
 			retVal = "\n" + "*".repeat(indentLevel) + " " + dialogue.text.join(" ");
 		}
+		if (dialogue.next) retVal += stringify(dialogue.next, indentLevel);
+		return retVal;
 	} else {
 		console.log("Could not make sense of the following dialogue entry:");
 		console.log(dialogue);
