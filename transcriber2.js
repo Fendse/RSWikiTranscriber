@@ -8,6 +8,7 @@ onPageReady(function () {
 		document.getElementById("use-custom-indent").addEventListener("change", function(evt) {
 			document.getElementById("custom-indent").disabled = !evt.target.checked;
 		});
+		window.alt1.events.alt1pressed.push(eventSelect);
 	} else {
 		document.getElementById("output").innerText = "Could not detect Alt1";
 	}
@@ -371,4 +372,44 @@ function areTheSame(box1, box2) {
 		return true;
 	}
 
+}
+
+
+function eventSelect(evt) {
+	var read = reader.read(a1lib.bindfullrs());
+
+	if (!read) return;
+	if (!isOpts(read)) return;
+	
+	console.log(evt);
+	for (var i = 0; i < read.opts.length; ++i) {
+		if (read.opts[i].hover) {
+			console.log("Selected option " + i + " by pressing Alt1");
+			console.log(read.opts[i]);
+			select(i);
+			return;
+		}
+	}
+
+	console.log("Selected no option on Alt1 press");
+	// if (currentChild.opts) {
+	// 	var chosenIndex = undefined;
+	// 	for (var i = 0; i < currentChild.opts.length; ++i) {
+	// 		var opt = currentChild.opts[i];
+	// 		if (opt.x <= evt.x
+	// 			&& opt.x + opt.w >= evt.x
+	// 			&& opt.y <= evt.y
+	// 			&& opt.y + opt.h >= evt.y
+	// 		   ) {
+	// 			select(i);
+	// 		}
+			
+	// 	}
+	// 	if (chosenIndex === undefined) {
+	// 		console.log("None of the available options from the following child were selected:");
+	// 		console.log(currentChild);
+	// 	} else {
+	// 		select(chosenIndex);
+	// 	}
+	// }
 }
