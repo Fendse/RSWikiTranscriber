@@ -1,4 +1,4 @@
-This is a WIP RuneApps app for transcribing RuneScape dialogue in the format used by the RuneScape Wiki.
+This is a WIP [Alt1](https://runeapps.org/alt1) app for transcribing [RuneScape](https://rs.game) dialogue in the [format](https://rs.wiki/RS:Style_guide/Transcripts) used by the [RuneScape Wiki](https://rs.wiki).
 
 # Installing
 
@@ -20,8 +20,8 @@ Once you have installed Alt1, add this app to it like so:
 1. Enter your name in the text area that says Player Name, if you want your name to be automatically replaced with the word Player
 1. Press Start
 1. Talk to an NPC
-1. When you're given a dialogue option, make sure you click the corresponding button on the RSWikiTranscriber window. You can do this before or after clicking the option.
- 1. Alternatively, you can hover your mouse over a dialogue option and press Alt+1. You'll have to do this *before* clicking the option.
+1. When you're given a dialogue option, make sure you click the corresponding button on the RSWikiTranscriber window. You can do this before *or* after clicking the option.
+    * Alternatively, you can hover your mouse over a dialogue option and press Alt+1. You'll have to do this *before* clicking the option.
 1. At any time, press Export to print the current state of the dialogue tree.
 1. If you need to go through a dialogue multiple times, pressing Stop then Start again will allow you to try to combine several paths through a conversation into a single tree.
 1. Press Clear to completely clear the dialogue tree and start over.
