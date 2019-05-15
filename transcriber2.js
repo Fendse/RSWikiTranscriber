@@ -1,3 +1,5 @@
+console.log(uuid());
+
 onPageReady(function () {
 	if (window.alt1) {
 		stopAndClear();
@@ -67,7 +69,7 @@ function exportTree() {
 	}
 
 	
-	document.getElementById("output").innerText = stringify(dialogueTree, initialIndent);
+	document.getElementById("output").innerText = stringify(dialogueTree, initialIndent, null);
 	return;
 	
 	var itemsToParse = [dialogueTree];
@@ -102,6 +104,7 @@ function spacebar() {
 	}
 
 	var continuingFromOld = false;
+	var equalNode;
 	if (currentChild) {
 		if (areTheSame(currentChild, read)) {
 			// Keep things in sync after restarts.
@@ -122,11 +125,27 @@ function spacebar() {
 				//  had currentChild.next not been set)
 			}
 		}
-		currentChild.next = read;
-		read.parent = currentChild;
+		equalNode = findEqualNode(read);
+		if (equalNode) {
+			currentChild.next = equalNode;
+			equalNode.parents.push(currentChild);
+			if (!equalNode.anchor) {
+				equalNode.anchor = uuid();
+			}
+		} else {
+			currentChild.next = read;
+			read.parents = [currentChild];
+		}
 	}
-	
-	currentChild = read;
+
+	if (equalNode) {
+		currentChild = equalNode;
+		if (!equalNode.anchor) {
+			equalNode.anchor = uuid();
+		}
+	} else {
+		currentChild = read;
+	}
 	setupOpts(currentChild.opts);
 	if (!dialogueTree) {
 		dialogueTree = currentChild;
@@ -161,9 +180,9 @@ function select(index) {
 	if (!isOpts(read)) {
 		interval = setInterval(spacebar, 400);
 	}
-	read.parent = currentChild;
+	read.parents = [currentChild];
 
-
+	var equalNode = findEqualNode(read);
 	if (currentChild.opts[index].next) {
 		// We've been here before
 		if (areTheSame(read, currentChild.opts[index].next)) {
@@ -179,11 +198,18 @@ function select(index) {
 			//  had currentChild.opts[index].next not been set)
 		}
 	}
-		
-	currentChild.opts[index].next = read;
-	read.parent = currentChild;
+
+	if (equalNode) {
+		currentChild.opts[index].next = equalNode;
+		equalNode.parents.push(currentChild);
+
+		currentChild = equalNode;
+	} else {
+		currentChild.opts[index].next = read;
+		read.parents = [currentChild];
 	
-	currentChild = read;
+		currentChild = read;
+	}
 	setupOpts(currentChild.opts);
 }
 
@@ -299,10 +325,22 @@ function isMessage(read) {
 }
 
 
-function stringify(dialogue, indentLevel) {
+var anchorsVisited;
+function stringify(dialogue, indentLevel, parent) {
 	if (dialogue == null) return ""; // Is this sensible or do we want {{transcript missing}}?
+	if (!parent) anchorsVisited = {};
+
+	if (dialogue.anchor) {
+		if (anchorsVisited[dialogue.anchor]) {
+			return "\n" + "*".repeat(indentLevel) + " ''(continues [[#" + dialogue.anchor + "|@@here]])''";
+		} else {
+			anchorsVisited[dialogue.anchor] = true;
+		}
+	}
+
+	var retVal = "";
 	if (isOpts(dialogue)) {
-		var retVal = "\n";
+		retVal = "\n";
 		retVal += "*".repeat(indentLevel + 1);
 		retVal += " ";
 		retVal += dialogue.title[0].toUpperCase() + dialogue.title.slice(1).toLowerCase();
@@ -311,20 +349,25 @@ function stringify(dialogue, indentLevel) {
 			retVal += "\n";
 			retVal += "*".repeat(indentLevel + 2);
 			retVal += dialogue.opts[i].str;
+
+			if (dialogue.anchor) {
+				retVal += "<span id=\"" + dialogue.anchor + "\"></span>";
+			}
+
+
 			if (dialogue.opts[i].next) {
-				retVal += stringify(dialogue.opts[i].next, indentLevel + 3);
+				retVal += stringify(dialogue.opts[i].next, indentLevel + 3, dialogue);
 			} else {
 				retVal += "\n" + "*".repeat(indentLevel + 3) + " {{Transcript missing}}";
 			}
 			
 		}
-		return retVal;
 	} else if (isSpeech(dialogue)) {
-		var retVal = "";
-		if (dialogue.parent
-			&& isSpeech(dialogue.parent)
-			&& dialogue.parent.title == dialogue.title) {
-				retVal =  " " + dialogue.text.join(" ");
+		if (parent
+			&& !dialogue.anchor
+			&& isSpeech(parent)
+			&& parent.title == dialogue.title) {
+			retVal =  " " + dialogue.text.join(" ");
 		} else {
 			retVal = "\n"
 				+ "*".repeat(indentLevel)
@@ -333,21 +376,29 @@ function stringify(dialogue, indentLevel) {
 				+ ":''' "
 				+ dialogue.text.join(" ");
 		}
-		if (dialogue.next) return retVal + stringify(dialogue.next, indentLevel);
-		else return retVal;
+		if (dialogue.anchor) {
+			retVal += "<span id=\"" + dialogue.anchor + "\"></span>";
+		}
+		
+		if (dialogue.next) retVal += stringify(dialogue.next, indentLevel, dialogue);
 	} else if (isMessage(dialogue)) {
-		var retVal = "";
-		if (dialogue.parent && isMessage(dialogue.parent)) {
+		if (parent
+			&& !dialogue.anchor
+			&& isMessage(parent)) {
 			retVal = " " + dialogue.text.join(" ");
 		} else {
 			retVal = "\n" + "*".repeat(indentLevel) + " " + dialogue.text.join(" ");
 		}
-		if (dialogue.next) retVal += stringify(dialogue.next, indentLevel);
-		return retVal;
+		if (dialogue.anchor) {
+			retVal += "<span id=\"" + dialogue.anchor + "\"></span>";
+		}
+		
+		if (dialogue.next) retVal += stringify(dialogue.next, indentLevel, dialogue);
 	} else {
 		console.log("Could not make sense of the following dialogue entry:");
 		console.log(dialogue);
 	}
+	return retVal;
 }
 
 var playerInputField;
@@ -406,4 +457,30 @@ function eventSelect(evt) {
 	}
 
 	console.log("Selected no option on Alt1 press");
+}
+
+
+function findEqualNode(node, anchorsVisited={}) {
+	var q = new Queue();
+	q.enqueue(dialogueTree);
+	while (!q.isEmpty()) {
+		var candidate = q.dequeue();
+		if (candidate.anchor) {
+			if (anchorsVisited[candidate.anchor]) {
+				continue; // Looping forever is bad, let's not
+			} else {
+				anchorsVisited[candidate.anchor] = true;
+			}
+		}
+		if (areTheSame(node, candidate)) {
+			return candidate;
+		}
+		if (isOpts(candidate)) {
+			for (var i = 0; i < candidate.opts.length; ++i) {
+				q.enqueue(candidate.opts[i]);
+			}
+		} else if (candidate.next) {
+			q.enqueue(candidate.next);
+		}
+	}
 }
