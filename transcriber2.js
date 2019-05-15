@@ -287,19 +287,18 @@ function stringify(dialogue, indentLevel) {
 	if (dialogue == null) return ""; // Is this sensible or do we want {{transcript missing}}?
 	if (isOpts(dialogue)) {
 		var retVal = "\n";
-		retVal += "*".repeat(indentLevel);
-		retVal += " '''";
+		retVal += "*".repeat(indentLevel + 1);
+		retVal += " ";
 		retVal += dialogue.title[0].toUpperCase() + dialogue.title.slice(1).toLowerCase();
-		retVal += "'''";
 
 		for (var i = 0; i < dialogue.opts.length; ++i) {
 			retVal += "\n";
-			retVal += "*".repeat(indentLevel + 1);
+			retVal += "*".repeat(indentLevel + 2);
 			retVal += dialogue.opts[i].str;
 			if (dialogue.opts[i].next) {
-				retVal += stringify(dialogue.opts[i].next, indentLevel + 2);
+				retVal += stringify(dialogue.opts[i].next, indentLevel + 3);
 			} else {
-				retVal += "\n" + "*".repeat(indentLevel + 2) + " {{Transcript missing}}";
+				retVal += "\n" + "*".repeat(indentLevel + 3) + " {{Transcript missing}}";
 			}
 			
 		}
