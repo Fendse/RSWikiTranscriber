@@ -25,3 +25,6 @@ Once you have installed Alt1, add this app to it like so:
 1. At any time, press Export to print the current state of the dialogue tree.
 1. If you need to go through a dialogue multiple times, pressing Stop then Start again will allow you to try to combine several paths through a conversation into a single tree.
 1. Press Clear to completely clear the dialogue tree and start over.
+
+The app only requires the "View screen" permission to function, but enabling the "Show overlay" permission lets the app show an overlay to which keeps track of which dialogue options you have selected in the past.
+Currently, this overlay only lasts for up to about 20 seconds, due to limitations of the Alt1 overlay API.

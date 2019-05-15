@@ -28,7 +28,7 @@ function stopTranscribe() {
 	stopButton.innerText = "Start";
 	clearInterval(interval);
 	interval = null;
-	setupOptButtons(null);
+	setupOpts(null);
 	currentChild = dialogueTree;
 }
 
@@ -99,7 +99,6 @@ function spacebar() {
 		clearInterval(interval);
 		interval = null;
 		
-		setupOptButtons(read.opts);
 	}
 
 	var continuingFromOld = false;
@@ -112,6 +111,7 @@ function spacebar() {
 			// We've been here before
 			if (areTheSame(read, currentChild.next)) {
 				currentChild = currentChild.next;
+				setupOpts(currentChild.opts);
 				return;
 			} else {
 				// We're probably dealing with random/conditional dialogue
@@ -127,6 +127,7 @@ function spacebar() {
 	}
 	
 	currentChild = read;
+	setupOpts(currentChild.opts);
 	if (!dialogueTree) {
 		dialogueTree = currentChild;
 	}
@@ -160,7 +161,6 @@ function select(index) {
 	if (!isOpts(read)) {
 		interval = setInterval(spacebar, 400);
 	}
-	setupOptButtons(read.opts);
 	read.parent = currentChild;
 
 
@@ -168,6 +168,7 @@ function select(index) {
 		// We've been here before
 		if (areTheSame(read, currentChild.opts[index].next)) {
 			currentChild = currentChild.opts[index].next;
+			setupOpts(currentChild.opts);
 			return;
 		} else {
 			// We're probably dealing with random/conditional dialogue
@@ -183,6 +184,7 @@ function select(index) {
 	read.parent = currentChild;
 	
 	currentChild = read;
+	setupOpts(currentChild.opts);
 }
 
 function isNewRead(read) {
@@ -214,16 +216,23 @@ function isNewRead(read) {
 
 /**
 * Given a list of dialogue options, replaces any existing dialogue option buttons with buttons
-* matching the options in the list. The supplied list may be empty, or null, or undefined.
-* In that case, the bttons are simply removed.
+* matching the options in the list. 
+* If the Overlay permission has been granted, also shows an icon by the dialogue options
+* indicating whether they've been visited in the past, and whether they've been selected.
+
+* The supplied list may be empty, or null, or undefined.
+* In that case, the buttons are simply removed and any overlays are cleared.
 */
-function setupOptButtons(opts) {
+function setupOpts(opts) {
+	// Set up buttons
 	var optButtonField = document.getElementById("options");
 	var optButtons = optButtonField.getElementsByClassName("select-button");
 	for (var i = optButtons.length - 1; i >= 0; --i) {
 		optButtonField.removeChild(optButtons[i]);
 	}
-
+	if (window.alt1.permissionsOverlay) {
+		window.alt1.overLayClearGroup("RSWT");
+	}
 	if (!opts) return;
 	for (var i = 0; i < opts.length; ++i) {
 		var button = document.createElement("DIV");
