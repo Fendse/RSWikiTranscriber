@@ -234,6 +234,23 @@ function setupOptButtons(opts) {
 		optButtonField.appendChild(button);
 	}
 
+	// Set up overlays
+	if (window.alt1.permissionOverlay) {
+		window.alt1.overLaySetGroup("RSWT");
+		for (var i = 0; i < opts.length; ++i) {
+			var color;
+			if (opts[i].next) {
+				color = a1lib.mixcolor(0, 255, 0);
+			} else {
+				color = a1lib.mixcolor(255, 0, 0);
+			}
+
+			window.alt1.overLayRect(color, opts[i].buttonx, opts[i].y - 8, opts[i].w, 18, 3600000, 2);
+			// TODO: Maybe use intervals to make the overlay last longer than 20s
+		}
+	} else {
+		console.log("Missing overlay permission");
+	}
 }
 /**
 * Required because closures apparently don't work the way I thought they would.
@@ -270,17 +287,6 @@ function isOpts(read) {
 function isMessage(read) {
 	if (!read) return false;
 	return (read.text && !read.title && !read.opts) ? true : false;
-}
-
-function parseSpeech(read) {
-	// Assume it's valid
-	read.parent = currentChild;
-	
-}
-
-
-function parseOpts(read) {
-	
 }
 
 
@@ -383,35 +389,12 @@ function eventSelect(evt) {
 	if (!read) return;
 	if (!isOpts(read)) return;
 	
-	console.log(evt);
 	for (var i = 0; i < read.opts.length; ++i) {
 		if (read.opts[i].hover) {
-			console.log("Selected option " + i + " by pressing Alt1");
-			console.log(read.opts[i]);
 			select(i);
 			return;
 		}
 	}
 
 	console.log("Selected no option on Alt1 press");
-	// if (currentChild.opts) {
-	// 	var chosenIndex = undefined;
-	// 	for (var i = 0; i < currentChild.opts.length; ++i) {
-	// 		var opt = currentChild.opts[i];
-	// 		if (opt.x <= evt.x
-	// 			&& opt.x + opt.w >= evt.x
-	// 			&& opt.y <= evt.y
-	// 			&& opt.y + opt.h >= evt.y
-	// 		   ) {
-	// 			select(i);
-	// 		}
-			
-	// 	}
-	// 	if (chosenIndex === undefined) {
-	// 		console.log("None of the available options from the following child were selected:");
-	// 		console.log(currentChild);
-	// 	} else {
-	// 		select(chosenIndex);
-	// 	}
-	// }
 }
