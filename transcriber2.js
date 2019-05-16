@@ -304,6 +304,7 @@ function isMessage(read) {
 */
 function stringify(dialogue, indentLevel=1) {
 	if (dialogue == null) return ""; // Is this sensible or do we want {{transcript missing}}?
+	var playerName = playerInputField.value;
 	if (isOpts(dialogue)) {
 		var retVal = "\n";
 		retVal += "*".repeat(indentLevel);
@@ -313,7 +314,7 @@ function stringify(dialogue, indentLevel=1) {
 		for (var i = 0; i < dialogue.opts.length; ++i) {
 			retVal += "\n";
 			retVal += "*".repeat(indentLevel + 1);
-			retVal += dialogue.opts[i].str;
+			retVal += dialogue.opts[i].str.replace(playerName, "Player");
 			if (dialogue.opts[i].next) {
 				retVal += stringify(dialogue.opts[i].next, indentLevel + 2);
 			} else {
@@ -327,23 +328,23 @@ function stringify(dialogue, indentLevel=1) {
 		if (dialogue.parent
 			&& isSpeech(dialogue.parent)
 			&& dialogue.parent.title == dialogue.title) {
-				retVal =  " " + dialogue.text.join(" ");
+			retVal =  " " + dialogue.text.join(" ").replace(playerName, "Player");
 		} else {
 			retVal = "\n"
 				+ "*".repeat(indentLevel)
 				+ " '''"
 				+ titleOrPlayerName(dialogue.title)
 				+ ":''' "
-				+ dialogue.text.join(" ");
+				+ dialogue.text.join(" ").replace(playerName, "Player");
 		}
 		if (dialogue.next) return retVal + stringify(dialogue.next, indentLevel);
 		else return retVal;
 	} else if (isMessage(dialogue)) {
 		var retVal = "";
 		if (dialogue.parent && isMessage(dialogue.parent)) {
-			retVal = " " + dialogue.text.join(" ");
+			retVal = " " + dialogue.text.join(" ").replace(playerName, "Player");
 		} else {
-			retVal = "\n" + "*".repeat(indentLevel) + " " + dialogue.text.join(" ");
+			retVal = "\n" + "*".repeat(indentLevel) + " " + dialogue.text.join(" ").replace(playerName, "Player");
 		}
 		if (dialogue.next) retVal += stringify(dialogue.next, indentLevel);
 		return retVal;
