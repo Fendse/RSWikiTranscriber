@@ -148,6 +148,7 @@ function spacebar() {
 	}
 	setupOpts(currentChild.opts);
 	if (!dialogueTree) {
+		currentChild.parents = [null];
 		dialogueTree = currentChild;
 	}
 }
