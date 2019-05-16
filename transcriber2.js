@@ -299,7 +299,10 @@ function isMessage(read) {
 }
 
 
-function stringify(dialogue, indentLevel) {
+/**
+* Turns a dialogue tree into a string.
+*/
+function stringify(dialogue, indentLevel=1) {
 	if (dialogue == null) return ""; // Is this sensible or do we want {{transcript missing}}?
 	if (isOpts(dialogue)) {
 		var retVal = "\n";
@@ -351,6 +354,11 @@ function stringify(dialogue, indentLevel) {
 }
 
 var playerInputField;
+
+/**
+* Returns the supplied string if it's equal (case insensitive) to the value contained in the playername input field,
+* and return "Player" otherwise
+*/
 function titleOrPlayerName(ttl) {
 	if (ttl.toUpperCase() == playerInputField.value.toUpperCase()) {
 		return "Player";
@@ -360,6 +368,17 @@ function titleOrPlayerName(ttl) {
 }
 
 
+/**
+* Returns whether two dialogue boxes are similar enough to be thought of as being the same.
+* Currently, this is true if one of the following holds:
+*     1. Both boxes are "speech boxes", their titles are identical, and their text is identical after replacing all linebreaks with spaces.
+*     2. Both boxes are "option boxes", their titles are identical, and they feature the same number of options, with the same texts, in the same order.
+*     3. Both boxes are "message boxes", and their text is identical after replacing all linebreaks with spaces.
+* If one of the boxes is null or undefined, but the other is not, this returns false.
+* In all other cases, undefined is returned.
+*
+* Some or all of these conditions may change in the future.
+*/
 function areTheSame(box1, box2) {
 	if (!!box1 != !!box2) return false;
 
@@ -392,6 +411,11 @@ function areTheSame(box1, box2) {
 }
 
 
+/**
+* Fired by Alt1-s event handler when Alt+1 is pressed.
+* Delegates to select() if a dialogue option button is hovered.
+* Does nothing otherwise.
+*/
 function eventSelect(evt) {
 	var read = reader.read(a1lib.bindfullrs());
 
