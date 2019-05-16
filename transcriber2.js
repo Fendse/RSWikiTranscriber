@@ -304,7 +304,7 @@ function isMessage(read) {
 */
 function stringify(dialogue, indentLevel=1) {
 	if (dialogue == null) return ""; // Is this sensible or do we want {{transcript missing}}?
-	var playerName = playerInputField.value;
+	var playerName = new RegExp(playerInputField.value, "gi");
 	if (isOpts(dialogue)) {
 		var retVal = "\n";
 		retVal += "*".repeat(indentLevel);
