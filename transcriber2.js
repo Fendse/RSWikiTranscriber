@@ -338,6 +338,9 @@ function isMessage(read) {
 }
 
 
+/**
+* Turns a dialogue tree into a string.
+*/
 var anchorsVisited;
 /**
 * Turns a dialogue tree into a string.
