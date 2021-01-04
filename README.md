@@ -4,15 +4,9 @@ This is a WIP [Alt1](https://runeapps.org/alt1) app for transcribing [RuneScape]
 
 This app must be run through Alt1. It will refuse to work if it isn't. Alt1 can be downloaded [here](https://runeapps.org).
 
-Once you have installed Alt1, add this app to it like so:
+Once you have installed Alt1, you should navigate to [https://fendse.github.io/RSWikiTranscriber](https://fendse.github.io/RSWikiTranscriber) in the Alt1 browser. After doing do, you should see an "Add App" button in the upper right corner. Clicking that will make the app available.
 
-1. Clone or download this repository.
-1. If you downloaded it as a zip file, extract the files somewhere you'll remember.
-1. Open the appconfig.json file.
-1. Replace the file paths after "appUrl" and "configUrl" with the paths to the transcriber2.html and appconfig.json files on your computer.
-1. Open Alt1, and open the Alt1 browser (by opening the Alt1 Toolkit menu, then clicking Browser)
-1. Paste the appUrl into the browser's address bar
-1. Click the Add App button in the upper right corner.
+Alternatively, you can install the app locally, by cloning or downloading this repository and using the Alt1 browser to navigate to the "index.html" file of your downloaded copy. Then, add the app as normal by pressing the "Add App" button in the upper right corner. Do *not* delete the downloaded files as long as you still want to keep using the app.
 
 # Using RSWikiTranscriber
 
