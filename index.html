@@ -1,51 +1,69 @@
 <html>
   <head>
-	<meta charset="UTF-8">
-	<link rel="stylesheet" type="text/css" href="https://runeapps.org//nis/nis.css" />
-	<link rel="stylesheet" type="text/css" href="https://runeapps.org//runeappslib.css" />
-	<script type="text/javascript" src="https://runeapps.org//runeappslib.js"></script>
-	<script type="text/javascript" src="https://runeapps.org//imagedetect.js"></script>
-	<script type="text/javascript" src="https://runeapps.org//alt1lib.js"></script>
-	<script type="text/javascript" src="https://runeapps.org//imagelibs/ocr.js"></script>
-	<script type="text/javascript" src="https://runeapps.org//imagelibs/dialogfull.js"></script>
-	<script type="text/javascript" src="https://runeapps.org//imagelibs/lorebook.js"></script>
-	<script type="text/javascript" src="Queue.js"></script>
-	<script type="text/javascript" src="uuid-random/uuid-random.min.js"></script>
-	<script type="text/javascript" src="transcriber2.js"></script>
-	<style>
-	  .nisbutton {
-	  width: 33%;
-	  }
-	  #options .nisbutton {
-	  overflow: hidden;
-	  height: 20%;
-	  width: 100%;
-	  white-space: no-wrap;
-	  }
-	  #output {
-	  height: 40%;
-	  overflow-y: auto;
-	  }
-	  #options {
-	  height: 165px;
-	  }
-	</style>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="https://runeapps.org//nis/nis.css" />
+    <link rel="stylesheet" type="text/css" href="https://runeapps.org//runeappslib.css" />
+    <script type="text/javascript" src="https://runeapps.org//runeappslib.js"></script>
+    <script type="text/javascript" src="https://runeapps.org//imagedetect.js"></script>
+    <script type="text/javascript" src="https://runeapps.org//alt1lib.js"></script>
+    <script type="text/javascript" src="https://runeapps.org//imagelibs/ocr.js"></script>
+    <script type="text/javascript" src="https://runeapps.org//imagelibs/dialogfull.js"></script>
+    <script type="text/javascript" src="https://runeapps.org//imagelibs/lorebook.js"></script>
+    <script type="text/javascript" src="Queue.js"></script>
+    <script type="text/javascript" src="uuid-random/uuid-random.min.js"></script>
+    <script type="text/javascript" src="transcriber2.js"></script>
+    <style>
+      .nisbutton {
+        width: 33%;
+      }
+      #options .nisbutton {
+        overflow: hidden;
+        height: 20%;
+        width: 100%;
+        white-space: no-wrap;
+      }
+      #output {
+        height: 40%;
+        overflow-y: auto;
+      }
+      #options {
+        height: 165px;
+      }
+      #warnings {
+        background-color: #ff8888;
+        border: 3px solid red;
+      }
+      #warnings:empty {
+        display: none;
+      }
+      .warning {
+        color: #000000;
+      }
+      .warning:hover {
+        border: 1px solid #777777;
+        background-color: #ffcccc;
+      }
+      .dismiss-warning {
+        float: right;
+      }
+    </style>
   </head>
   <body class="nis">
-	<input type="text" name="playername" value="Player Name" id="playername">
-	<input type="number" value="1" min="0" max="20" id="custom-indent" style="width:3em;" disabled>
-	<input type="checkbox" id="use-custom-indent">
-	<table>
-	  <tr>
-		<td class="nisbutton" id="start-stop">Start</td>
-		<td class="nisbutton" id="clear">Clear</td>
-		<td class="nisbutton" id="export">Export</td>
-	  </tr>
-	</table>
-	Auto-export dialogue <input type="checkbox" id="auto-export">
-	<div id="output"></div>
-	<div id="options"></div>
+    <input type="text" name="playername" value="Player Name" id="playername">
+    <input type="number" value="1" min="0" max="20" id="custom-indent" style="width:3em;" disabled>
+    <input type="checkbox" id="use-custom-indent">
+    <table>
+      <tr>
+        <td class="nisbutton" id="start-stop">Start</td>
+        <td class="nisbutton" id="clear">Clear</td>
+        <td class="nisbutton" id="export">Export</td>
+      </tr>
+    </table>
+    Auto-export dialogue <input type="checkbox" id="auto-export">
+    <div id="warnings"><p class="warning" id="warn-noscript">JavaScript appears to be disabled.<br>You'll need to open this page in the Alt1 browser to be able to install this app.<br>(If you have disabled JavaScript in Alt1... Why?)</p></div>
+    <div id="output"></div>
+    <div id="options"></div>
   </body>
 </html>
 
-	
+    

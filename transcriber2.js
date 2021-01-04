@@ -1,4 +1,8 @@
 onPageReady(function () {
+	var warningsOutput = document.getElementById("warnings");
+	// This one has to be present from the start - we can't exactly use a script to add it otherwise
+	warningsOutput.removeChild(document.getElementById("warn-noscript"));
+
 	if (window.alt1) {
 		stopAndClear();
 		document.getElementById("clear").onclick = stopAndClear;
@@ -10,13 +14,44 @@ onPageReady(function () {
 		});
 		window.alt1.events.alt1pressed.push(eventSelect);
 	} else {
-		document.getElementById("output").innerText += "Could not detect Alt1";
+		// warn("Could not detect Alt1.\nThis app can only be installed from inside Alt1's browser app.", "warn-no-alt1", true);	
 	}
 	if (uuid === undefined) {
-		document.getElementById("output").innerText += "Missing submodule: uuid\nUse the following git command to fix:\n";
-		document.getElementById("output").innerText += "git submodule update --init --recursive";
+		warn("Missing submodule: uuid\nIf you installed the app locally, make sure the \"uuid\" folder is present and not empty.\nIf you installed using Git, the following command should fix the problem: \"git submodule update --init --recursive\".", "warn-submodule-uuid", true);
 	}
 });
+
+/**
+ * Add a warning with the given text to the element with id "warnings"
+ * The warning contains a "dismiss" button that shows up unless this is called with permanent = true
+ * The warning will have the "warning" class and the specified ID if one is present, and no ID otherwise
+ */
+function warn(text, id, permanent = false) {
+	warning = document.createElement("p");
+	warning.innerText = text;
+	warning.classList.add("warning");
+
+	if (id !== undefined) {
+		warning.id = id;
+	}
+	if (!permanent) {
+		dismissButton = document.createElement("button");
+		dismissButton.classList.add("dismiss-warning");
+		dismissButton.onclick = function (w) {
+			return function () {
+				console.log("Removing a warning");
+				console.log(w);
+				w.parentNode.removeChild(w);
+			}
+		} (warning);
+		dismissButton.innerText = "🗙";
+
+		warning.appendChild(dismissButton);
+	}
+	document.getElementById("warnings").appendChild(warning);
+
+	console.log("Warning: " + text);
+}
 
 var interval = null;
 function startTranscribe() {
