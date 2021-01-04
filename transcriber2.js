@@ -14,7 +14,7 @@ onPageReady(function () {
 		});
 		window.alt1.events.alt1pressed.push(eventSelect);
 	} else {
-		// warn("Could not detect Alt1.\nThis app can only be installed from inside Alt1's browser app.", "warn-no-alt1", true);	
+		warn("Could not detect Alt1.\nThis app can only be installed from inside Alt1's browser app.", "warn-no-alt1", true);	
 	}
 	if (uuid === undefined) {
 		warn("Missing submodule: uuid\nIf you installed the app locally, make sure the \"uuid\" folder is present and not empty.\nIf you installed using Git, the following command should fix the problem: \"git submodule update --init --recursive\".", "warn-submodule-uuid", true);
