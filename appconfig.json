@@ -1,8 +1,8 @@
 {
 	"appName": "WikiTranscriber",
 	"description": "This app transcribes RuneScape dialogue in the format used by the RuneScape Wiki.",
-	"appUrl": "file:///D:/Documents/RSWikiTranscriber/transcriber2.html",
-	"configUrl": "file:///D:/Documents/RSWikiTranscriber/appconfig.json",
+	"appUrl": "./transcriber2.html",
+	"configUrl": "./appconfig.json",
 	"defaultWidth": 300,
 	"defaultHeight": 430,
 	"minWidth": 300,
